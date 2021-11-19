@@ -180,7 +180,7 @@ A traffic light example
 
 ## Digital Clock
 <a name="DigiClock"></a>
-A **Digital Clock** is a clock that shows the current time in format(hours : minutes : seconds)
+A **Digital Clock** is a clock that shows the current time in format(hours : minutes : seconds), it is a type of clock that displays the time digitally 
 here is the code of the class:
 ```javascript
 #ifndef DIGITALCLOCK_H
