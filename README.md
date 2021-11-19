@@ -47,7 +47,7 @@ In this Exercise, we used the QTimer to simulate the traffc light.
 We created a Class called **traffic light** with 3 options: 
 **The First One** is that the colors are displayed randomly.
 
-Here is the code for the class:*
+Here is the code for the class:
 ```javascript
 
 class TrafficLight: public QWidget{
@@ -134,8 +134,113 @@ void TrafficLight::timerEvent(QTimerEvent *e){
 
 }
 ```
+![Image](/randomly_option2.png)
+
+colors display randomly
 
 **The Second One** is the keypress, when we press R the red is displaying, Y for the yellow and G for the green.
+
+Here is the code for the class:*
+```javascript
+class TrafficLight: public QWidget{
+  Q_OBJECT
+
+public:
+
+  TrafficLight(QWidget * parent = nullptr);
+  void keyPressEvent(QKeyEvent *e) override;
+
+protected:
+     void createWidgets();
+     void placeWidgets();
+     void makeConnexions();
+private:
+  QRadioButton * redlight;
+  QRadioButton * yellowlight;
+  QRadioButton * greenlight;
+  QVector<QRadioButton*> lights;
+  int index;
+  int currentTime;
+};
+```
+
+And here is the implementation:
+```javascript
+
+TrafficLight::TrafficLight(QWidget * parent): QWidget(parent){
+
+    //Creatign the widgets
+    createWidgets();
+
+    //place Widgets
+    placeWidgets();
+   index=0;
+}
+
+void TrafficLight::createWidgets()
+{
+
+  redlight = new QRadioButton;
+  redlight->setEnabled(false);
+  redlight->toggle();//activer le radio Button
+  redlight->setStyleSheet("QRadioButton::indicator:checked { background-color: red;}");
+
+  yellowlight = new QRadioButton;
+  yellowlight->setEnabled(false);
+  yellowlight->toggle();
+  yellowlight->setStyleSheet("QRadioButton::indicator:checked { background-color: yellow;}");
+
+  greenlight = new QRadioButton;
+  greenlight->setEnabled(false);
+  greenlight->toggle();
+  greenlight->setStyleSheet("QRadioButton::indicator:checked { background-color: green;}");
+  startTimer(1000);
+  currentTime=0;
+  //ajouter les lights dans un tableu
+  lights.append(redlight);
+  lights.append(yellowlight);
+  lights.append(greenlight);
+
+
+}
+
+
+void TrafficLight::placeWidgets()
+{
+
+  // Placing the widgets
+  auto layout = new QVBoxLayout;
+  layout->addWidget(redlight);
+  layout->addWidget(yellowlight);
+  layout->addWidget(greenlight);
+  setLayout(layout);
+}
+void TrafficLight::keyPressEvent(QKeyEvent *e){
+
+
+//traiter le cas du rouge
+
+    if(e->key() == Qt::Key_R){
+        index=0;
+        lights[index]->toggle();
+    }
+    if(e->key() == Qt::Key_Y){
+        index=1;
+        lights[index]->toggle();
+    }
+    if(e->key() == Qt::Key_G){
+        index=2;
+        lights[index]->toggle();
+    }
+
+
+    if(e->key() == Qt::Key_Escape)
+        qApp->exit();
+}
+```
+![Image](/randomly_option2.png)
+
+colors provided the key pressed 
 
 **The Last One** is to give 4 seconds for the Red, 1 second for the Yellow and 2 for the Green.
 
