@@ -1,11 +1,10 @@
-# Programming Widget Layout
+# Signals And Slots
 
 
 - [Introduction](#INTRO)
-- [Experimenting With QHBoxLayout](#QHBox)
-- [Nested Layouts](#NestedLayout)
-- [Bug Report Form](#bugReport)
-- [Grid Layout](#GridLayout)
+- [Traffic Light](#TrLight)
+- [Digital Clock](#DigiClock)
+- [Calculator](#Calcul)
 
 <div id = "back"></div>
 
@@ -36,63 +35,140 @@ Example of a Form
     
 
  
- >**In This Zip you will have the project** [WidgetLayout.zip](https://github.com/HarirFahem/Homework21/blob/main/QHbox%2CFahem_Harir.zip) 
+ >**In This Zip you will have the project** [WidgetLayout.zip]() 
 
-### Experimenting With QHBoxLayout
-<a name="QHBox"></a>
+### Traffic Light
+<a name="TraLight"></a>
 
-**HBox** is a small C++ library with a simple API. The **API** is composed of a single HBox class, which represents a box. Naturally the boxes are hierarchically related. Each box will layout its children when changes are made to its size and other properties. The final layout depends on the "solver" of the parent, as well as the properties of the children.
+**Traffic Light** is a set of automatically operated coloured lights, typically red, yellow, and green, for controlling traffic at road junctions, pedestrian crossings, and roundabouts.
 
-We created a project called hbox.
+In this Exercise, we used the QTimer to simulate the traffc light.
+
+We created a Class called **traffic light**.
 Here is the code for the class:
 
 ```javascript
-class Dialog : public QWidget
-{
+class TrafficLight: public QWidget{
+  Q_OBJECT
 
 public:
-    explicit Dialog(QWidget *parent = nullptr);
+
+  TrafficLight(QWidget * parent = nullptr);
+  void timerEvent(QTimerEvent *e) override;
+  void keyPressEvent(QKeyEvent *e) override;
 
 protected:
-  void createWidgets();
-  void placeWidgets();
-  void makeConnexions();
-protected:
-  QLabel *label ;
-  QLineEdit *line;
-  QPushButton *search;
-  QHBoxLayout *layout;
+     void createWidgets();
+     void placeWidgets();
+     void makeConnexions();
+
+private:
+
+  QRadioButton * redlight;
+  QRadioButton * yellowlight;
+  QRadioButton * greenlight;
+  //QVector<QRadioButton*> lights;
+  int times[3]={4,1,2}; //temps de chacune
+  int index;//indice du light active
+  int currentTime;//temps d'activation du feu
+
 };
 
 ```
 And here is the implementation of the methods:
 ```javascript
 
-Dialog::Dialog(QWidget *parent) : QWidget(parent)
-{
+TrafficLight::TrafficLight(QWidget * parent): QWidget(parent){
+
+    //Creatign the widgets
     createWidgets();
-    placeWidgets();
-    makeConnexions();
 
+    //place Widgets
+    placeWidgets();
+  // startTimer(1000);
+   index=0;
+   //currentTime=0;
 }
-void Dialog::createWidgets()
+
+void TrafficLight::createWidgets()
 {
 
-   label = new QLabel("name: ");
-   line = new QLineEdit();
-   search = new QPushButton("Search");
-   layout = new QHBoxLayout();
-   setLayout(layout);
+  redlight = new QRadioButton;
+  redlight->setEnabled(false);
+  redlight->toggle();//activer le radio Button
+  redlight->setStyleSheet("QRadioButton::indicator:checked { background-color: red;}");
+
+  yellowlight = new QRadioButton;
+  yellowlight->setEnabled(false);
+  yellowlight->toggle();
+  yellowlight->setStyleSheet("QRadioButton::indicator:checked { background-color: yellow;}");
+
+  greenlight = new QRadioButton;
+  greenlight->setEnabled(false);
+  greenlight->toggle();
+  greenlight->setStyleSheet("QRadioButton::indicator:checked { background-color: green;}");
+  startTimer(1000);
+  currentTime=0;
+ /* //ajouter les lights dans un tableu
+  lights.append(redlight);
+  lights.append(yellowlight);
+  lights.append(greenlight);
+  */
 
 }
-void Dialog ::placeWidgets(){
-    layout->addWidget(label);
-    layout->addWidget(line);
-    layout->addWidget(search);
 
+
+void TrafficLight::placeWidgets()
+{
+
+  // Placing the widgets
+  auto layout = new QVBoxLayout;
+  layout->addWidget(redlight);
+  layout->addWidget(yellowlight);
+  layout->addWidget(greenlight);
+  setLayout(layout);
+}
+void TrafficLight::keyPressEvent(QKeyEvent *e){
+
+
+//traiter le cas du rouge
+
+   /* if(e->key() == Qt::Key_R){
+        index=0;
+        lights[index]->toggle();
+    }
+    if(e->key() == Qt::Key_Y){
+        index=1;
+        lights[index]->toggle();
+    }
+    if(e->key() == Qt::Key_G){
+        index=2;
+        lights[index]->toggle();
+    }
+*/
+
+    if(e->key() == Qt::Key_Escape)
+        qApp->exit();
 }
 
-void Dialog::makeConnexions(){
+void TrafficLight::timerEvent(QTimerEvent *e){
+    //index light active
+    // index=(index+1)%3;
+    //lights(vecteur des lights)
+     //lights[index]->toggle();
+    currentTime++;
+     if(redlight->isChecked()&&currentTime==4){
+         yellowlight->toggle();
+         currentTime=0;
+     }
+     if(yellowlight->isChecked()&&currentTime==1){
+         greenlight->toggle();
+         currentTime=0;
+     }
+     if(greenlight->isChecked()&&currentTime==2){
+        redlight->toggle();
+         currentTime=0;
+     }
 
 }
 
@@ -102,16 +178,17 @@ And for showing the window we wrote in the main class the following code:
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
-    auto  D = new Dialog;
-    D->setWindowTitle("QHBoxLayout test");
-    D->show();
-    return app.exec();
+    QApplication a(argc, argv);
+    //Creating the traffic light
+    auto light = new TrafficLight;
+    //showing the trafic light
+    light->show();
+    return a.exec();
 }
 ```
 And here is the Form that we Obtain :
 
-![Image](/hboxlayout.png)
+![Image](/traffic_light.png)
 
 A QHBoxLayout example
     
@@ -119,7 +196,7 @@ A QHBoxLayout example
  [(**Back to top**)](#back)
 
 ## Nested Layouts 
-<a name="NestedLayout"></a>
+<a name="DigiClock"></a>
     
 First we analyzed this following construction of a form:
 
@@ -238,7 +315,7 @@ Nested Layout
 
 ##  Bug Report Form 
 
-<a name="bugReport"></a>
+<a name="Calcul"></a>
     
 This example is taken from [Qt_Tutorial](https://doc.qt.io/archives/qq/qq25-formlayout.html)
 
