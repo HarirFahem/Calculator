@@ -48,6 +48,7 @@ We created a Class called **traffic light** with 3 options:
 **The First One** is
 **The Second One** is
 **The Last One** is to give 4 seconds for the Red, 1 second for the Yellow and 2 for the Green
+
 Here is the code for the class:
 
 ```javascript
@@ -70,16 +71,19 @@ private:
   QRadioButton * redlight;
   QRadioButton * yellowlight;
   QRadioButton * greenlight;
-  //QVector<QRadioButton*> lights;
   int times[3]={4,1,2}; //temps de chacune
   int index;//indice du light active
   int currentTime;//temps d'activation du feu
-  //QVector<QRadioButton*> lights ;
 
 };
 
 ```
 And here is the implementation of the methods:
+for the first **option**:
+
+for the second **option**:
+
+for the last **one**::
 ```javascript
 
 TrafficLight::TrafficLight(QWidget * parent): QWidget(parent){
@@ -89,9 +93,7 @@ TrafficLight::TrafficLight(QWidget * parent): QWidget(parent){
 
     //place Widgets
     placeWidgets();
-  // startTimer(1000);
    index=0;
-   //currentTime=0;
 }
 
 void TrafficLight::createWidgets()
@@ -113,11 +115,6 @@ void TrafficLight::createWidgets()
   greenlight->setStyleSheet("QRadioButton::indicator:checked { background-color: green;}");
   startTimer(1000);
   currentTime=0;
- /* //ajouter les lights dans un tableu
-  lights.append(redlight);
-  lights.append(yellowlight);
-  lights.append(greenlight);
-  */
 
 }
 
@@ -137,29 +134,11 @@ void TrafficLight::keyPressEvent(QKeyEvent *e){
 
 //traiter le cas du rouge
 
-   /* if(e->key() == Qt::Key_R){
-        index=0;
-        lights[index]->toggle();
-    }
-    if(e->key() == Qt::Key_Y){
-        index=1;
-        lights[index]->toggle();
-    }
-    if(e->key() == Qt::Key_G){
-        index=2;
-        lights[index]->toggle();
-    }
-*/
-
     if(e->key() == Qt::Key_Escape)
         qApp->exit();
 }
 
 void TrafficLight::timerEvent(QTimerEvent *e){
-    //index light active
-    // index=(index+1)%3;
-    //lights(vecteur des lights)
-     //lights[index]->toggle();
     currentTime++;
      if(redlight->isChecked()&&currentTime==4){
          yellowlight->toggle();
@@ -194,16 +173,131 @@ And here is the Form that we Obtain :
 
 ![Image](/traffic_light.png)
 
-A QHBoxLayout example
+A traffic light example
     
 
  [(**Back to top**)](#back)
 
 ## Digital Clock
 <a name="DigiClock"></a>
-    
-    
+A **Digital Clock** is a clock that shows the current time in format(hours : minutes : seconds)
+here is the code of the class:
+```javascript
+#ifndef DIGITALCLOCK_H
+#define DIGITALCLOCK_H
 
+#include <QWidget>
+#include<QLCDNumber>
+#include<QTimerEvent>
+
+class DigitalClock : public QWidget
+{
+
+public:
+    explicit DigitalClock(QWidget *parent = nullptr);
+
+protected:
+  void   createWidgets();
+  void  placeWidgets();
+  void updateTime();
+
+
+
+protected:
+  QLCDNumber *hour;
+  QLCDNumber *second;
+  QLCDNumber *minute;
+
+  //surcherger
+  void timerEvent(QTimerEvent *e) override;
+
+};
+
+#endif // DIGITALCLOCK_H
+
+```
+
+Here is the implementation of the methods:
+```javascript
+#include "digitalclock.h"
+#include<QTime>
+#include<QHBoxLayout>
+
+DigitalClock::DigitalClock(QWidget *parent) : QWidget(parent)
+{
+createWidgets();
+
+placeWidgets();
+setWindowTitle("Digital Clock");
+startTimer(1000);
+}
+void DigitalClock::updateTime(){
+    //mettre le temp
+    auto T =QTime::currentTime();
+    hour->display(T.hour());
+    minute->display(T.minute());
+    second->display(T.second());
+
+
+
+}
+
+void DigitalClock::createWidgets(){
+    hour = new QLCDNumber;
+    minute = new QLCDNumber;
+    second = new QLCDNumber;
+
+   // mettre le temp
+    auto T =QTime::currentTime();
+    hour->display(T.hour());
+    minute->display(T.minute());
+    second->display(T.second());
+    //have a color in the background and the numbres
+   hour->setStyleSheet("background: black; color: #72A8CB");
+   minute->setStyleSheet("background: black; color: #3291CD");
+   second->setStyleSheet("background: black; color: #0B45C6");
+
+}
+
+void DigitalClock::placeWidgets(){
+
+   hour->setMinimumHeight(100);
+   minute->setMinimumHeight(100);
+   second->setMinimumHeight(100);
+ QLayout * layout = new QHBoxLayout;
+ setLayout(layout);
+ layout->addWidget(hour);
+ layout->addWidget(minute);
+ layout->addWidget(second);
+
+
+}
+
+
+void DigitalClock::timerEvent(QTimerEvent *e){
+    auto T =QTime::currentTime();
+    hour->display(T.hour());
+    minute->display(T.minute());
+    second->display(T.second());
+
+}
+
+```
+And for the Mainly part:
+ ```javascript
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+   //showing digital clock
+   auto D = new DigitalClock;
+   D->show();
+    return a.exec();
+}
+ ```
+ 
+ And here is the result which is showing in the current time:
+ 
+ ![Image](/digital_clock.png)
 
 [(**Back to top**)](#back)
 
