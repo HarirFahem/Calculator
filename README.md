@@ -44,7 +44,10 @@ Example of a Form
 
 In this Exercise, we used the QTimer to simulate the traffc light.
 
-We created a Class called **traffic light**.
+We created a Class called **traffic light** with 3 options: 
+**The First One** is
+**The Second One** is
+**The Last One** is to give 4 seconds for the Red, 1 second for the Yellow and 2 for the Green
 Here is the code for the class:
 
 ```javascript
@@ -71,6 +74,7 @@ private:
   int times[3]={4,1,2}; //temps de chacune
   int index;//indice du light active
   int currentTime;//temps d'activation du feu
+  //QVector<QRadioButton*> lights ;
 
 };
 
