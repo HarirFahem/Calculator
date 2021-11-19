@@ -266,19 +266,16 @@ private:
   QRadioButton * redlight;
   QRadioButton * yellowlight;
   QRadioButton * greenlight;
-  int times[3]={4,1,2}; //temps de chacune
-  int index;//indice du light active
-  int currentTime;//temps d'activation du feu
+  QVector<QRadioButton*> lights;
+  int times[3]={4,1,2}; 
+  int index;
+  int currentTime;
 
 };
 
 ```
 And here is the implementation of the methods:
-for the first **option**:
 
-for the second **option**:
-
-for the last **one**::
 ```javascript
 
 TrafficLight::TrafficLight(QWidget * parent): QWidget(parent){
@@ -310,6 +307,10 @@ void TrafficLight::createWidgets()
   greenlight->setStyleSheet("QRadioButton::indicator:checked { background-color: green;}");
   startTimer(1000);
   currentTime=0;
+  lights.append(redlight);
+  lights.append(yellowlight);
+  lights.append(greenlight);
+
 
 }
 
@@ -329,6 +330,18 @@ void TrafficLight::keyPressEvent(QKeyEvent *e){
 
 //traiter le cas du rouge
 
+   if(e->key() == Qt::Key_R){
+        index=0;
+        lights[index]->toggle();
+    }
+    if(e->key() == Qt::Key_Y){
+        index=1;
+        lights[index]->toggle();
+    }
+    if(e->key() == Qt::Key_G){
+        index=2;
+        lights[index]->toggle();
+    }
     if(e->key() == Qt::Key_Escape)
         qApp->exit();
 }
@@ -347,6 +360,8 @@ void TrafficLight::timerEvent(QTimerEvent *e){
         redlight->toggle();
          currentTime=0;
      }
+
+}
 
 }
 
