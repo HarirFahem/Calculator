@@ -45,9 +45,11 @@ Example of a Form
 In this Exercise, we used the QTimer to simulate the traffc light.
 
 We created a Class called **traffic light** with 3 options: 
-**The First One** is
-**The Second One** is
-**The Last One** is to give 4 seconds for the Red, 1 second for the Yellow and 2 for the Green
+**The First One** is that the colors are displayed randomly.
+
+**The Second One** is the keypress, when we press R the red is displaying, Y for the yellow and G for the green.
+
+**The Last One** is to give 4 seconds for the Red, 1 second for the Yellow and 2 for the Green.
 
 Here is the code for the class:
 
