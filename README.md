@@ -238,7 +238,7 @@ void TrafficLight::keyPressEvent(QKeyEvent *e){
         qApp->exit();
 }
 ```
-![Image](/randomly_option2.png)
+![Image](/option3.png)
 
 colors provided the key pressed 
 
