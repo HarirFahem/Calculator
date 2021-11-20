@@ -411,14 +411,12 @@ protected:
   void  placeWidgets();
   void updateTime();
 
-
-
 protected:
   QLCDNumber *hour;
   QLCDNumber *second;
   QLCDNumber *minute;
 
-  //surcherger
+  //surcharger
   void timerEvent(QTimerEvent *e) override;
 
 };
