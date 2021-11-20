@@ -16,7 +16,7 @@
 
 <a name="INTRO"></a>
     
-"" **All programming is maintenance programming, because you are rarely writing original code.**""
+"" **Programming isn't about what you know; it's about what you can figure out.**""
 
 A **widget** is an element of a graphical user interface (**GUI**) which displays information or provides a specific way for a user to interact with the operating system or an application. 
 
@@ -242,7 +242,7 @@ void TrafficLight::keyPressEvent(QKeyEvent *e){
 
 colors provided the key pressed 
 
-**The Last One** is to give 4 seconds for the Red, 1 second for the Yellow and 2 for the Green.
+**The Last One** is to give 4 seconds for the Red, 1 second for the Yellow and 2 for the Green in addition of the keypress.
 
 Here is the code for the class:
 
