@@ -513,17 +513,24 @@ int main(int argc, char *argv[])
 
 ##  Calculator
 
+<a name="Calcul"></a>
+    
 We added the interactive functionality to the calculator widgets written in the first part of the homework. We used **signals and slots** to simulate a calculator that supports operations: "*","+","-","/","sqrt","1/x", "x^2"
  
  The result of the first part:
  ![Image](/numerickeypad.png)
+ 
+ To start with, we represented all the mathematical operations by : 
+ ```markdown
+ left (op) right
+ ```
+ 
+Then we respond to each digit click, we used the **Sender** approach which allpw a slot to get the identity of the sender object, from that we got the button which was clicked.
 
-<a name="Calcul"></a>
-    
+Then , we passed to the digits interaction, in which we connected all the buttons to the slot, the function will use the sender method to get the identify of which button was clicked and act accordingly.
+After, we focused on the left and the right operand, 
 
-
-
- In this project we analyzed and coded many forms using the widget layout.
+ In this project we analyzed and coded many forms using signals and slots.
     
    
     
