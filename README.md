@@ -513,6 +513,11 @@ int main(int argc, char *argv[])
 
 ##  Calculator
 
+We added the interactive functionality to the calculator widgets written in the first part of the homework. We used **signals and slots** to simulate a calculator that supports operations: "*","+","-","/","sqrt","1/x", "x^2"
+ 
+ The result of the first part:
+ ![Image](/numerickeypad.png)
+
 <a name="Calcul"></a>
     
 
