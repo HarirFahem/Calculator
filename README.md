@@ -528,7 +528,288 @@ We added the interactive functionality to the calculator widgets written in the 
 Then we respond to each digit click, we used the **Sender** approach which allpw a slot to get the identity of the sender object, from that we got the button which was clicked.
 
 Then , we passed to the digits interaction, in which we connected all the buttons to the slot, the function will use the sender method to get the identify of which button was clicked and act accordingly.
-After, we focused on the left and the right operand, 
+After, we focused on the left and the right operand, and we made part of the operation_interaction(using the same sender method)
+
+Finally, we implement the slot for the enter button to compute the result of combining the left and the right value according to the entered operation
+
+for the code of the class:
+
+```javascript
+class Calculator : public QWidget
+{
+    Q_OBJECT
+
+public:
+    Calculator(QWidget *parent = nullptr);
+    ~Calculator();
+
+protected:
+    void createWidgets();
+    void placeWidgets();
+    void makeConnexions();
+
+public slots:
+  void newDigit();
+   void changeOperation();
+  void Clear();
+   void ShowResult();
+   void ShowResult1();
+
+  private:
+
+     QGridLayout *buttonsL;
+     QVBoxLayout *Layout;
+     QVector<QPushButton*> digits;
+     QPushButton *clear;
+     QPushButton *Close;
+     QVector<QPushButton*> operations;
+     QVector<QPushButton*> operations1;
+     QLCDNumber *disp;
+     QPushButton *point;
+     QPushButton *poin;
+     double * left=nullptr;
+       double * right=nullptr;
+      QString *operation=nullptr;
+
+};
+
+#endif // CALCUL_H
+
+```
+
+For the implementation of the methods:
+```javascript
+
+Calculator::Calculator(QWidget *parent) : QWidget(parent)
+{
+createWidgets();
+placeWidgets();
+makeConnexions();
+
+}
+
+Calculator::~Calculator()
+{
+
+    delete buttonsL;
+    delete disp;
+    delete Layout;
+    delete clear;
+    delete Close;
+
+}
+
+void Calculator::createWidgets(){
+    Layout = new QVBoxLayout;
+
+
+    //LCD
+    disp = new QLCDNumber(this);
+    disp->setDigitCount(6);
+    disp->setStyleSheet("background: black; color: #FFFF00");
+    disp->setSegmentStyle(QLCDNumber::Flat);
+
+   buttonsL= new QGridLayout;
+
+
+   for(int i=0; i < 10; i++)
+   {
+       digits.push_back(new QPushButton(QString::number(i)));
+       digits.back()->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+       digits.back()->resize(sizeHint().width(), sizeHint().height());
+   }
+
+   clear = new QPushButton("CLEAR",this);
+   clear->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+   clear->resize(sizeHint().width(), sizeHint().height());
+
+
+   Close= new QPushButton("CLOSE",this);
+   Close->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+   Close->resize(sizeHint().width(), sizeHint().height());
+
+   point = new QPushButton(".",this);
+   poin = new QPushButton("-+",this);
+
+   // Operations
+
+   operations1.push_back(new QPushButton("/"));
+   operations1.push_back(new QPushButton("*"));
+   operations1.push_back(new QPushButton("-"));
+   operations1.push_back(new QPushButton("+"));
+
+   operations.push_back(new QPushButton("X²"));
+   operations.push_back(new QPushButton("Sqrt"));
+   operations.push_back(new QPushButton("1/x"));
+   operations.push_back(new QPushButton("="));
+
+}
+void Calculator::placeWidgets(){
+
+
+    Layout->addWidget(disp);
+    Layout->addLayout(buttonsL);
+
+    for(int i=1; i <10; i++)
+        buttonsL->addWidget(digits[i], (i-1)/3, (i-1)%3);
+
+    //Adding the operations
+    for(int i=0; i < 4; i++)
+        buttonsL->addWidget(operations1[ i], i, 3);
+
+    for(int i=0; i < 4; i++)
+        buttonsL->addWidget(operations[ i], i,4 );
+
+
+    //Adding the  button
+    buttonsL->addWidget(digits[0], 3, 0);
+    buttonsL->addWidget(point,3, 1);
+    buttonsL->addWidget(poin, 3, 2);
+    buttonsL->addWidget(clear,4,0,1,2);
+    buttonsL->addWidget(Close,4,3,1,2);
+
+    setLayout(Layout);
+
+}
+
+void Calculator::newDigit( )
+{
+
+            auto button = dynamic_cast<QPushButton*>(sender());
+
+            //getting the value
+            double value = button->text().toDouble();
+          //Check if we have an operation defined
+            if(operation)
+                {
+                    //check if we have a value or not
+                        *right = 10 * (*right) + value;
+                    disp->display(*right);
+
+                }
+                else
+                {
+                    if(!left)
+                        left = new double {value};
+                    else
+                        *left = 10 * (*left) + value;
+
+                    disp->display(*left);
+                }
+          }
+
+
+
+
+
+void Calculator::changeOperation(){
+    auto button = dynamic_cast<QPushButton*>(sender());
+
+        //Storing the operation
+        operation = new QString{button->text()};
+
+        //Initiating the right button
+        right = new double{0};
+
+        //reseting the display
+        disp->display(0);
+
+}
+
+void Calculator::makeConnexions(){
+
+    for(int i=0; i <10; i++)
+         connect(digits[i], &QPushButton::clicked,
+                 this, &Calculator::newDigit);
+
+
+    connect(Close, &QPushButton::clicked, this, &Calculator::close);
+
+    for(int i=0; i <4; i++){
+                        connect(operations1[i], &QPushButton::clicked,
+                                this, &Calculator::changeOperation);
+}
+    for(int i=0; i <3; i++){
+                        connect(operations[i], &QPushButton::clicked,
+                                this, &Calculator::changeOperation);
+  }
+  connect(operations[ 3], &QPushButton::clicked,this, &Calculator::ShowResult);
+  connect(operations[ 3], &QPushButton::clicked,this, &Calculator::ShowResult1);
+
+
+    connect(clear,&QPushButton::clicked,this, &Calculator::Clear);
+
+}
+    void Calculator::ShowResult(){
+                      if(*operation=="+"){
+                            *left=*left + *right;
+                            disp->display(*left);
+                            right = new double{0};
+                      }
+                    else if(*operation=="-"){
+                          *left=*left-(*right);
+                        disp->display(*left);
+                        right = new double{0};
+                      }
+                    else if(*operation=="*"){
+                             *left=(*left)*(*right);
+                        disp->display(*left);
+                        right = new double{1};
+                      }
+                    else if(*operation=="/"){
+                       if(*right==0)
+                           disp->display("error");
+                       else {
+                           *left=*left/((*right));
+                        disp->display(*left);
+                        right = new double{1};
+                       }
+                      }
+    }
+
+    void Calculator::ShowResult1(){
+          if(*operation=="Sqrt"){
+              if(*left==0)
+                  disp->display("error");
+              else{
+                      *left = std::sqrt(*left);
+                      disp->display(*left);
+                      left = new double{0};
+                  }
+          }else if(*operation=="X²"){
+
+                *left = qPow(*left, 2.0);
+               disp->display(*left);
+               left = new double{0};
+
+
+
+    }}
+void Calculator::Clear()
+{
+    right = new double{0};
+    left = new double{0};
+    disp->display("0");
+
+}
+```
+For the mainly part:
+```javascript
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+     Calculator calc;
+     calc.setWindowTitle("Calculator");
+     calc.showMaximized();
+     calc.setFixedSize(400,500);
+     calc.move(QApplication::desktop()->screen()->rect().center()-calc.rect().center());
+
+    return a.exec();
+}
+```
+![Image](/calculatorr.png)
+
+Calculator Form
 
  In this project we analyzed and coded many forms using signals and slots.
     
