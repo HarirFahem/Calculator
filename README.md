@@ -515,7 +515,9 @@ int main(int argc, char *argv[])
 We added the interactive functionality to the calculator widgets written in the first part of the homework. We used **signals and slots** to simulate a calculator that supports operations: "*","+","-","/","sqrt","1/x", "x^2", "cos", "sin", "ln"
  
  The result of the first part:
+ 
  ![Image](/numerickeypad.png)
+ 
  
  To start with, we represented all the mathematical operations by : 
  ```markdown
