@@ -20,13 +20,12 @@
 
 A **widget** is an element of a graphical user interface (**GUI**) which displays information or provides a specific way for a user to interact with the operating system or an application. 
 
-**Widgets** include icons, pull-down menus, buttons, selection boxes, progress indicators, on-off checkmarks, scroll bars, windows, window edges, toggle buttons, form, and many other devices for displaying information and for inviting, accepting, and responding to user actions.
-
 In **programming**, widget also means the small program that is written in order to describe what a particular widget looks like, how it behaves and how it responds to user actions. Most operating systems include a set of ready-to-tailor widgets that a programmer can incorporate in an application, specifying how it is to behave. New widgets can be created.
 
 The **Layout Widget** is a responsive container that allows you to separate a responsive container into sections. Layouts can be placed inside the responsive containers of other layouts to create more even sections.
 
-The Header and Footer have constant heights with responsive widths, while the sidebars have a constant width and responsive heights. The Columns and rows have both responsive widths and heights, but you can change the percent of available space they will occupy relative to the space not being occupied by headers, footers, and sidebars.
+**Signals** and **Slots** is a language construct introduced in Qt for communication between objects which makes it easy to implement the observer pattern while avoiding boilerplate code. The concept is that GUI widgets can send signals containing event information which can be received by other widgets / controls using special functions known as slots. This is similar to C/C++ function pointers, but signal/slot system ensures the type-correctness of callback arguments.
+They are used for communication between objects. The signals and slots mechanism is a central feature of Qt and probably the part that differs most from the features provided by other frameworks.
 
 
 ![Image](/intro.png)
@@ -35,7 +34,7 @@ Example of a Form
     
 
  
- >**In This Zip you will have the project** [WidgetLayout.zip]() 
+ >**In This Zip you will have the project** [WidgetLayout.zip](https://github.com/HarirFahem/homework22/blob/main/part2_hw2_fahem_harir.zip) 
 
 ### Traffic Light
 <a name="TraLight"></a>
@@ -140,7 +139,7 @@ colors display randomly
 
 **The Second One** is the keypress, when we press R the red is displaying, Y for the yellow and G for the green.
 
-Here is the code for the class:*
+Here is the code for the class:
 ```javascript
 class TrafficLight: public QWidget{
   Q_OBJECT
@@ -513,7 +512,7 @@ int main(int argc, char *argv[])
 
 <a name="Calcul"></a>
     
-We added the interactive functionality to the calculator widgets written in the first part of the homework. We used **signals and slots** to simulate a calculator that supports operations: "*","+","-","/","sqrt","1/x", "x^2"
+We added the interactive functionality to the calculator widgets written in the first part of the homework. We used **signals and slots** to simulate a calculator that supports operations: "*","+","-","/","sqrt","1/x", "x^2", "cos", "sin", "ln"
  
  The result of the first part:
  ![Image](/numerickeypad.png)
@@ -817,6 +816,10 @@ void Calculator::Ln()
 
 }
 ```
+we use this code to move the main window which is named calc in our project to the center(getting the size of the screen then creating a rectangle around the screen and then the form is going to the center of this rectangle)
+```markdown
+calc.move(QApplication::desktop()->screen()->rect().center()-calc.rect().center());
+```
 And for the mainly part:
 ```javascript
 int main(int argc, char *argv[])
@@ -835,7 +838,7 @@ int main(int argc, char *argv[])
 
 Calculator Form
 
- In this project we analyzed and coded many forms using signals and slots.
+ In this project we analyzed and coded many forms using the widget layout, and we made communication between objects using the signals and slots.
     
    
     
