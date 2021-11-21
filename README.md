@@ -843,7 +843,6 @@ Calculator Form
  In this project we analyzed and coded many forms using the widget layout, and we made communication between objects using the signals and slots.
     
    
-    
  [(**Back to top**)](#back)
     
 Made By:
