@@ -541,6 +541,7 @@ public:
     Calculator(QWidget *parent = nullptr);
     ~Calculator();
 
+
 protected:
     void createWidgets();
     void placeWidgets();
@@ -548,30 +549,31 @@ protected:
 
 public slots:
   void newDigit();
-   void changeOperation();
+  void changeOperation();
   void Clear();
-   void ShowResult();
-   void ShowResult1();
+  void ShowResult();
+  void ShowResult1();
+  void Ln();
 
   private:
 
-     QGridLayout *buttonsL;
-     QVBoxLayout *Layout;
-     QVector<QPushButton*> digits;
-     QPushButton *clear;
-     QPushButton *Close;
-     QVector<QPushButton*> operations;
-     QVector<QPushButton*> operations1;
-     QLCDNumber *disp;
-     QPushButton *point;
-     QPushButton *poin;
-     double * left=nullptr;
-       double * right=nullptr;
+      QGridLayout *buttonsL;
+      QVBoxLayout *Layout;
+      QVector<QPushButton*> digits;
+      QPushButton *clear;
+      QPushButton *Close;
+      QVector<QPushButton*> operations;
+      QVector<QPushButton*> operations1;
+      QLCDNumber *disp;
+      QPushButton *point;
+      QPushButton *result;
+      double * left=nullptr;
+      double * right=nullptr;
       QString *operation=nullptr;
+
 
 };
 
-#endif // CALCUL_H
 
 ```
 
@@ -626,74 +628,74 @@ void Calculator::createWidgets(){
    Close->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
    Close->resize(sizeHint().width(), sizeHint().height());
 
-   point = new QPushButton(".",this);
-   poin = new QPushButton("-+",this);
+   point = new QPushButton("ln",this);
+   result = new QPushButton("=",this);
 
-   // Operations
+      // Operations
 
-   operations1.push_back(new QPushButton("/"));
-   operations1.push_back(new QPushButton("*"));
-   operations1.push_back(new QPushButton("-"));
-   operations1.push_back(new QPushButton("+"));
+      operations1.push_back(new QPushButton("/"));
+      operations1.push_back(new QPushButton("*"));
+      operations1.push_back(new QPushButton("-"));
+      operations1.push_back(new QPushButton("+"));
 
-   operations.push_back(new QPushButton("X²"));
-   operations.push_back(new QPushButton("Sqrt"));
-   operations.push_back(new QPushButton("1/x"));
-   operations.push_back(new QPushButton("="));
+      operations.push_back(new QPushButton("X²"));
+      operations.push_back(new QPushButton("Sqrt"));
+      operations.push_back(new QPushButton("1/x"));
+      operations.push_back(new QPushButton("Cos"));
+      operations.push_back(new QPushButton("Sin"));
+
 
 }
 void Calculator::placeWidgets(){
 
+       Layout->addWidget(disp);
+       Layout->addLayout(buttonsL);
 
-    Layout->addWidget(disp);
-    Layout->addLayout(buttonsL);
+       for(int i=1; i <10; i++)
+           buttonsL->addWidget(digits[i], (i-1)/3, (i-1)%3);
 
-    for(int i=1; i <10; i++)
-        buttonsL->addWidget(digits[i], (i-1)/3, (i-1)%3);
+       //Adding the operations
+       for(int i=0; i < 4; i++)
+           buttonsL->addWidget(operations1[ i], i, 3);
 
-    //Adding the operations
-    for(int i=0; i < 4; i++)
-        buttonsL->addWidget(operations1[ i], i, 3);
-
-    for(int i=0; i < 4; i++)
-        buttonsL->addWidget(operations[ i], i,4 );
+       for(int i=0; i < 5; i++)
+           buttonsL->addWidget(operations[ i], i,4 );
 
 
-    //Adding the  button
-    buttonsL->addWidget(digits[0], 3, 0);
-    buttonsL->addWidget(point,3, 1);
-    buttonsL->addWidget(poin, 3, 2);
-    buttonsL->addWidget(clear,4,0,1,2);
-    buttonsL->addWidget(Close,4,3,1,2);
+       //Adding the  button
+       buttonsL->addWidget(digits[0], 3, 0);
+       buttonsL->addWidget(point,3, 1);
+       buttonsL->addWidget(result, 3, 2);
+       buttonsL->addWidget(clear,4,0,1,2);
+       buttonsL->addWidget(Close,4,2,1,2);
 
-    setLayout(Layout);
+       setLayout(Layout);
 
 }
 
 void Calculator::newDigit( )
 {
+    auto button = dynamic_cast<QPushButton*>(sender());
 
-            auto button = dynamic_cast<QPushButton*>(sender());
+               //getting the value
+               double value = button->text().toDouble();
+               //Check if we have an operation defined
+               if(operation)
+                   {
+                       //check if we have a value or not
+                           *right = 10 * (*right) + value;
+                       disp->display(*right);
 
-            //getting the value
-            double value = button->text().toDouble();
-          //Check if we have an operation defined
-            if(operation)
-                {
-                    //check if we have a value or not
-                        *right = 10 * (*right) + value;
-                    disp->display(*right);
+                   }
+                   else
+                   {
+                       if(!left)
+                           left = new double {value};
+                       else
+                           *left = 10 * (*left) + value;
 
-                }
-                else
-                {
-                    if(!left)
-                        left = new double {value};
-                    else
-                        *left = 10 * (*left) + value;
-
-                    disp->display(*left);
-                }
+                       disp->display(*left);
+                   }
           }
 
 
@@ -717,81 +719,105 @@ void Calculator::changeOperation(){
 void Calculator::makeConnexions(){
 
     for(int i=0; i <10; i++)
-         connect(digits[i], &QPushButton::clicked,
-                 this, &Calculator::newDigit);
+             connect(digits[i], &QPushButton::clicked,
+                     this, &Calculator::newDigit);
 
 
-    connect(Close, &QPushButton::clicked, this, &Calculator::close);
+        connect(Close, &QPushButton::clicked, this, &Calculator::close);
 
-    for(int i=0; i <4; i++){
-                        connect(operations1[i], &QPushButton::clicked,
-                                this, &Calculator::changeOperation);
-}
-    for(int i=0; i <3; i++){
-                        connect(operations[i], &QPushButton::clicked,
-                                this, &Calculator::changeOperation);
-  }
-  connect(operations[ 3], &QPushButton::clicked,this, &Calculator::ShowResult);
-  connect(operations[ 3], &QPushButton::clicked,this, &Calculator::ShowResult1);
+        for(int i=0; i <4; i++){
+                            connect(operations1[i], &QPushButton::clicked,
+                                    this, &Calculator::changeOperation);
+    }
+        for(int i=0; i <5; i++){
+                            connect(operations[i], &QPushButton::clicked,
+                                    this, &Calculator::changeOperation);
+      }
+      connect(result, &QPushButton::clicked,this, &Calculator::ShowResult);
+      connect(result, &QPushButton::clicked,this, &Calculator::ShowResult1);
 
 
-    connect(clear,&QPushButton::clicked,this, &Calculator::Clear);
+
+        connect(clear,&QPushButton::clicked,this, &Calculator::Clear);
+        connect(point,&QPushButton::clicked,this, &Calculator::Ln);
 
 }
     void Calculator::ShowResult(){
-                      if(*operation=="+"){
-                            *left=*left + *right;
-                            disp->display(*left);
-                            right = new double{0};
-                      }
-                    else if(*operation=="-"){
-                          *left=*left-(*right);
-                        disp->display(*left);
-                        right = new double{0};
-                      }
-                    else if(*operation=="*"){
-                             *left=(*left)*(*right);
-                        disp->display(*left);
-                        right = new double{1};
-                      }
-                    else if(*operation=="/"){
-                       if(*right==0)
-                           disp->display("error");
-                       else {
-                           *left=*left/((*right));
-                        disp->display(*left);
-                        right = new double{1};
-                       }
-                      }
+      if(*operation=="+"){
+         *left=*left + *right;
+         disp->display(*left);
+         right = new double{0};
+       }
+        else if(*operation=="-"){
+         *left=*left-(*right);
+         disp->display(*left);
+         right = new double{0};
+       }
+       else if(*operation=="*"){
+       *left=(*left)*(*right);
+        disp->display(*left);
+         right = new double{1};
+       }
+       else if(*operation=="/"){
+       if(*right==0)
+        disp->display("error");
+       else {
+        *left=*left/((*right));
+         disp->display(*left);
+        right = new double{1};
+       }
+      }
     }
 
     void Calculator::ShowResult1(){
-          if(*operation=="Sqrt"){
-              if(*left==0)
-                  disp->display("error");
-              else{
-                      *left = std::sqrt(*left);
-                      disp->display(*left);
-                      left = new double{0};
-                  }
-          }else if(*operation=="X²"){
+        if(*operation=="Sqrt"){
+            if(*left==0)
+                disp->display("error");
+            else{
+                    *left = std::sqrt(*left);
+                    disp->display(*left);
+                    left = new double{0};
+                }
+        }else if(*operation=="X²"){
 
-                *left = qPow(*left, 2.0);
-               disp->display(*left);
-               left = new double{0};
-
+              *left = qPow(*left, 2.0);
+             disp->display(*left);
 
 
-    }}
+        }else if(*operation=="1/X"){
+            *left = 1.0 / *left;
+            disp->display(*left);
+
+        }else if (*operation=="Cos"){
+            *left= qCos(*left);
+            disp->display(*left);
+
+
+        }else if (*operation=="Sin"){
+            *left= qSin(*left);
+            disp->display(*left);
+
+        }
+
+    }
 void Calculator::Clear()
 {
-    right = new double{0};
+
     left = new double{0};
-    disp->display("0");
+    right = new double{0};
+    operation=nullptr;
+  disp->display("0");
+
+}
+void Calculator::Ln()
+{
+    *left= qLn(*left);
+    disp->display(*left);
+    left = new double{0};
 
 }
 ```
-For the mainly part:
+And for the mainly part:
 ```javascript
 int main(int argc, char *argv[])
 {
